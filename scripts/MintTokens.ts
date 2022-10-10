@@ -32,92 +32,90 @@ async function main() {
     const acc2Wallet = new ethers.Wallet(process.env.ACC2_PRIVATE_KEY ?? '');
     const acc2Signer = acc2Wallet.connect(provider);
 
-    // const myTokenContractWallet = new ethers.Wallet.
-
 
     const myTokenContract = new ethers.Contract(MY_TOKEN_CONTRACT_ADDRESS, myTokenABI.abi, signer) as MyToken;
     const tokenizedBallotContract = new ethers.Contract(BALLOT_CONTRACT_ADDRESS, tokenizedBallotABI.abi, myTokenContract.signer) as TokenizedBallot;
 
-    // const totalSupply = await myTokenContract.totalSupply();
-    // console.log(
-    //   `The initial total supply of this contract after deployment is ${totalSupply}\n`
-    // );
+    const totalSupply = await myTokenContract.totalSupply();
+    console.log(
+      `The initial total supply of this contract after deployment is ${totalSupply}\n`
+    );
 
-    // // Minting for acc1
-    // try {
-    //     const acc1MintTx = await myTokenContract.mint(acc1Signer.address, TOKENS_MINTED);
-    //     const acc1MintTxReceipt = await acc1MintTx.wait();
-    //     console.log({ acc1MintTxReceipt });
-    // } catch (error) {
-    //     console.log(error);
-    // }
-    // //
+    // Minting for acc1
+    try {
+        const acc1MintTx = await myTokenContract.mint(acc1Signer.address, TOKENS_MINTED);
+        const acc1MintTxReceipt = await acc1MintTx.wait();
+        console.log({ acc1MintTxReceipt });
+    } catch (error) {
+        console.log(error);
+    }
+    //
 
-    // const totalSupplyAfter = await myTokenContract.totalSupply();
-    // console.log(
-    //   `The initial total supply of this contract after minting is ${ethers.utils.formatEther(
-    //     totalSupplyAfter
-    //   )}\n`
-    // );
+    const totalSupplyAfter = await myTokenContract.totalSupply();
+    console.log(
+      `The initial total supply of this contract after minting is ${ethers.utils.formatEther(
+        totalSupplyAfter
+      )}\n`
+    );
 
-    // console.log("What is the current VotePower of acc1?");
-    // const acc1InitialVotingPowerAfterMint = await myTokenContract.getVotes(
-    //   acc1Signer.address
-    // );
-    // console.log(
-    //   `The vote balance of acc1 after minting is ${ethers.utils.formatEther(
-    //     acc1InitialVotingPowerAfterMint
-    //   )}\n`
-    // );
+    console.log("What is the current VotePower of acc1?");
+    const acc1InitialVotingPowerAfterMint = await myTokenContract.getVotes(
+      acc1Signer.address
+    );
+    console.log(
+      `The vote balance of acc1 after minting is ${ethers.utils.formatEther(
+        acc1InitialVotingPowerAfterMint
+      )}\n`
+    );
 
-    // console.log("Delegating from acc1 to acc1");
-    // const delegateTx = await myTokenContract.connect(acc1Signer).delegate(acc1Signer.address);
-    // await delegateTx.wait();
-    // const acc1InitialVotingPowerAfterDelegate = await myTokenContract.getVotes(
-    //   acc1Signer.address
-    // );
-    // console.log(
-    //   `The vote balance of acc1 after self delegating is ${ethers.utils.formatEther(
-    //     acc1InitialVotingPowerAfterDelegate
-    //   )}\n`
-    // );
-    // const currentBlock = await ethers.provider.getBlock("latest");
-    // console.log(`The current block number is ${currentBlock.number}\n`);
-    // const mintTx2 = await myTokenContract.mint(acc2Signer.address, TOKENS_MINTED);
-    // mintTx2.wait();
-    // const currentBlock2 = await ethers.provider.getBlock("latest");
-    // console.log(`The current block number is ${currentBlock2.number}\n`);
-    // const mintTx3 = await myTokenContract.mint(acc2Signer.address, TOKENS_MINTED);
-    // mintTx3.wait();
-    // const currentBlock3 = await ethers.provider.getBlock("latest");
-    // console.log(`The current block number is ${currentBlock3.number}\n`);
-    // let pastVotes = await Promise.all([
-    //   await myTokenContract.getPastVotes(acc1Signer.address, 0),
-    // ]);
-    // console.log({ pastVotes });
+    console.log("Delegating from acc1 to acc1");
+    const delegateTx = await myTokenContract.connect(acc1Signer).delegate(acc1Signer.address);
+    await delegateTx.wait();
+    const acc1InitialVotingPowerAfterDelegate = await myTokenContract.getVotes(
+      acc1Signer.address
+    );
+    console.log(
+      `The vote balance of acc1 after self delegating is ${ethers.utils.formatEther(
+        acc1InitialVotingPowerAfterDelegate
+      )}\n`
+    );
+    const currentBlock = await ethers.provider.getBlock("latest");
+    console.log(`The current block number is ${currentBlock.number}\n`);
+    const mintTx2 = await myTokenContract.mint(acc2Signer.address, TOKENS_MINTED);
+    mintTx2.wait();
+    const currentBlock2 = await ethers.provider.getBlock("latest");
+    console.log(`The current block number is ${currentBlock2.number}\n`);
+    const mintTx3 = await myTokenContract.mint(acc2Signer.address, TOKENS_MINTED);
+    mintTx3.wait();
+    const currentBlock3 = await ethers.provider.getBlock("latest");
+    console.log(`The current block number is ${currentBlock3.number}\n`);
+    let pastVotes = await Promise.all([
+      await myTokenContract.getPastVotes(acc1Signer.address, 0),
+    ]);
+    console.log({ pastVotes });
 
-    // // give minting role to addr1 & addr2
-    // const addr1MintingRightsTx = await myTokenContract.grantRole(formatBytes32String('MINTER_ROLE'), acc1Signer.address);
-    // const addr1MintingRightsTxReceipt = await addr1MintingRightsTx.wait();
-    // console.log({addr1MintingRightsTxReceipt})
+    // give minting role to addr1 & addr2
+    const addr1MintingRightsTx = await myTokenContract.grantRole(formatBytes32String('MINTER_ROLE'), acc1Signer.address);
+    const addr1MintingRightsTxReceipt = await addr1MintingRightsTx.wait();
+    console.log({addr1MintingRightsTxReceipt})
 
-    // const addr2MintingRightsTx = await myTokenContract.grantRole(formatBytes32String('MINTER_ROLE'), acc2Signer.address);
-    // const addr2MintingRightsTxReceipt = await addr2MintingRightsTx.wait();
-    // console.log({addr2MintingRightsTxReceipt})
+    const addr2MintingRightsTx = await myTokenContract.grantRole(formatBytes32String('MINTER_ROLE'), acc2Signer.address);
+    const addr2MintingRightsTxReceipt = await addr2MintingRightsTx.wait();
+    console.log({addr2MintingRightsTxReceipt})
 
-    // // check role of addr1 & addr2
+    // check role of addr1 & addr2
 
-    // const isAcc1Minter = await myTokenContract.hasRole(formatBytes32String('MINTER_ROLE'), acc1Signer.address);
-    // const isAcc2Minter = await myTokenContract.hasRole(formatBytes32String('MINTER_ROLE'), acc2Signer.address);
+    const isAcc1Minter = await myTokenContract.hasRole(formatBytes32String('MINTER_ROLE'), acc1Signer.address);
+    const isAcc2Minter = await myTokenContract.hasRole(formatBytes32String('MINTER_ROLE'), acc2Signer.address);
 
-    // console.log('Has Acc1 minting role?', isAcc1Minter);
-    // console.log('Has Acc2 minting role?', isAcc2Minter);
+    console.log('Has Acc1 minting role?', isAcc1Minter);
+    console.log('Has Acc2 minting role?', isAcc2Minter);
 
-    // const voteToProposal1Tx = await tokenizedBallotContract.connect(signer).vote(0, ethers.utils.parseEther("0.1"));
-    // await voteToProposal1Tx.wait();
+    const voteToProposal1Tx = await tokenizedBallotContract.connect(signer).vote(0, ethers.utils.parseEther("0.1"));
+    await voteToProposal1Tx.wait();
 
-    // const voteToProposal2Tx = await tokenizedBallotContract.connect(signer).vote(1, ethers.utils.parseEther("0.2"));
-    // await voteToProposal2Tx.wait();
+    const voteToProposal2Tx = await tokenizedBallotContract.connect(signer).vote(1, ethers.utils.parseEther("0.2"));
+    await voteToProposal2Tx.wait();
 
     const winnerName = await tokenizedBallotContract.winnerName();
 
@@ -126,7 +124,7 @@ async function main() {
     const currentBlock4 = await ethers.provider.getBlock("latest");
     console.log(`The current block number is ${currentBlock4.number}\n`);
 
-    const pastVotes = await Promise.all([
+    pastVotes = await Promise.all([
         await myTokenContract.getPastVotes(acc1Signer.address, currentBlock4.number),
       ]);
     console.log({ pastVotes });
